@@ -67,34 +67,31 @@ def add_toilet():
 
     return jsonify({'message': 'Toilet added successfully', 'toilet_id': new_toilet.id}), 201
             
-@app.route('/api/get_toilets', methods=['GET'])
-
+@app.route('/api/toilets', methods=['GET'])
 def get_toilets():
     lat = request.args.get('latitude', type=float) 
     lon = request.args.get('longitude', type=float)
     
-    #Filter options
+    # Filter options
     is_male = request.args.get('is_male', type=bool)
-    is_female = request.args.get('is_female', type = bool)
-    is_accessible = request.args.get('is_accessible', type = bool)
-    is_open = request.args.get('is_open', type = bool)
+    is_female = request.args.get('is_female', type=bool)
+    is_accessible = request.args.get('is_accessible', type=bool)
+    is_open = request.args.get('is_open', type=bool)
     
-    #Base query
+    # Base query
     query = Toilet.query     
     
-    
-    #Apply filters
-    if is_male is None:
-        # Example: Skip filtering by male if not specified
+    # Apply filters
+    if is_male is not None:
         query = query.filter_by(is_male=is_male)
-    if is_female is None:    
-        query = query.filter_by(is_female= is_female)
-    if is_accessible is None:
-        query = query.filter_by(is_accessible = is_accessible)
-    if is_open is None:
-        query = query.filter_by(is_open = is_open)
+    if is_female is not None:    
+        query = query.filter_by(is_female=is_female)
+    if is_accessible is not None:
+        query = query.filter_by(is_accessible=is_accessible)
+    if is_open is not None:
+        query = query.filter_by(is_open=is_open)
         
-      # Fetch all toilets  
+    # Fetch all toilets  
     toilets = query.all()
     
     toilet_list = []
@@ -114,8 +111,7 @@ def get_toilets():
             'description': toilet.description
         }
                 
-
-    # Calculate distance if coordinates provided
+        # Calculate distance if coordinates provided
         if lat and lon:
             distance = haversine(lat, lon, toilet.latitude, toilet.longitude)
             toilet_data['distance'] = distance
@@ -126,8 +122,7 @@ def get_toilets():
     if lat and lon:
         toilet_list.sort(key=lambda x: x.get('distance', float('inf')))
     
-    
-    return jsonify(toilet_list) 
+    return jsonify(toilet_list)
 
 @app.route('/api/update-toilet/<int:toilet_id>', methods=['PUT'])
 def update_toilet(toilet_id):
