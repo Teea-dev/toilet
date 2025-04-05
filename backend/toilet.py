@@ -25,9 +25,10 @@ def populate_database():
             "description": "Modern facility with multiple stalls for both male and female students."
         },
         {
-            "name": "Main Library Restroom",
-            "latitude": 7.44192,
-            "longitude": 3.90525,
+            "name": "Access Bank Toilet",
+            "latitude": 7.442,
+            "longitude": 3.903,
+            
             "is_male": True,
             "is_female": True,
             "is_accessible": True,
