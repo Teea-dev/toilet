@@ -26,9 +26,8 @@ def populate_database():
         },
         {
             "name": "Access Bank Toilet",
-            "latitude": 7.442,
-            "longitude": 3.903,
-            
+            "latitude": 7.441625,
+            "longitude": 3.903240,
             "is_male": True,
             "is_female": True,
             "is_accessible": True,
