@@ -45,7 +45,42 @@ def populate_database():
             "is_open": True,
             "cleaniness_rating": 3.7,
             "description": "Basic facility with limited accessibility."
+        },
+        {
+            "name": "Student Eco-Friendly Center",
+            "latitude": 7.438301,
+            "longitude": 3.893746,
+            "is_male": True,
+            "is_female": True,
+            "is_accessible": True,
+            "is_open": True,
+            "cleaniness_rating": 4.7,
+            "description": "Clean toilets with comfortable area to sit, read and charge."
+        },
+         {
+            "name": "U&I Toilet",
+            "latitude": 7.438233,
+            "longitude": 3.894730,
+            "is_male": True,
+            "is_female": True,
+            "is_accessible": True,
+            "is_open": True,
+            "cleaniness_rating": 4.7,
+            "description": "Ask at the counter if you can use the toilet and you would be directed to it (Dont be shy they dont bite). Clean toilets with water running all the time ."
         }
+        ,
+         {
+            "name": "Jaja Toilet",
+            "latitude":   7.442383941605227,
+            "longitude": 3.900867913071352,
+            "is_male": True,
+            "is_female": True,
+            "is_accessible": True,
+            "is_open": True,
+            "cleaniness_rating": 4.7,
+            "description": "The toilets at Jaja are good but it can be restricted at times. When you get into the building walk straight and you will see the toilets on your left. The toilets are clean and have running water."
+        }
+        
     ]
 
     with app.app_context():

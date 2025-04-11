@@ -371,7 +371,7 @@ export default function Map({
               ? `<p><strong>Distance:</strong> ${toilet.distance.toFixed(2)} km</p>`
               : ""
           }
-          <p>${toilet.description}</p>
+          <p> <strong>Description:</strong>${toilet.description}</p>
         `);
 
         new mapboxgl.Marker(el)
