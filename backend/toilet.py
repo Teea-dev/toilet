@@ -20,7 +20,7 @@ def populate_database():
             "is_male": True,
             "is_female": True,
             "is_accessible": True,
-            "is_open": True,
+            "is_open": False,
             "cleaniness_rating": 4.2,
             "description": "Modern facility with multiple stalls for both male and female students."
         },
@@ -41,7 +41,7 @@ def populate_database():
             "longitude": 3.90380,
             "is_male": True,
             "is_female": True,
-            "is_accessible": False,
+            "is_accessible": True,
             "is_open": True,
             "cleaniness_rating": 3.7,
             "description": "Basic facility with limited accessibility."
