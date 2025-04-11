@@ -66,7 +66,7 @@ def populate_database():
             "is_accessible": True,
             "is_open": True,
             "cleaniness_rating": 4.7,
-            "description": "Ask at the counter if you can use the toilet and you would be directed to it (Dont be shy they dont bite). Clean toilets with water running all the time ."
+            "description": "Ask at the reception if you can use the toilet and you would be directed to it (Dont be shy they dont bite). Clean toilets with water running all the time ."
         }
         ,
          {
@@ -79,6 +79,54 @@ def populate_database():
             "is_open": True,
             "cleaniness_rating": 4.7,
             "description": "The toilets at Jaja are good but it can be restricted at times. When you get into the building walk straight and you will see the toilets on your left. The toilets are clean and have running water."
+        }
+        ,
+         {
+            "name": "UI Hotels",
+            "latitude":   7.448564093653943, 
+            "longitude": 3.9008091255170227,
+            "is_male": True,
+            "is_female": True,
+            "is_accessible": True,
+            "is_open": True,
+            "cleaniness_rating": 4.7,
+            "description": "The toilets at UI Hotels are  clean and always have running water. Ask the security at the gate if you can't find the toilet and they will direct you to it."
+        }
+        ,
+         {
+            "name": "UI Central Mosque",
+            "latitude":   7.447082461901469,
+            "longitude":  3.899328746759421,
+            "is_male": True,
+            "is_female": True,
+            "is_accessible": True,
+            "is_open": True,
+            "cleaniness_rating": 3.7,
+            "description": "The toilets at UI Central Mosque are alright "
+        }
+        ,
+         {
+            "name": "The Faculty Of Social Sciences",
+            "latitude":    7.447067741491339,
+            "longitude":  3.893511100064327,
+            "is_male": True,
+            "is_female": True,
+            "is_accessible": True,
+            "is_open": True,
+            "cleaniness_rating": 3.7,
+            "description": "The toilets in this building are always clean and have water running 80% of the time . The toilets that are always opened are  located on the first floor of the building. The downside is the toilets are for lecturers hence you need to be careful"
+        }
+        ,
+         {
+            "name": "Chemistry Building",
+            "latitude":    7.444518,
+            "longitude":   3.894077,
+            "is_male": True,
+            "is_female": True,
+            "is_accessible": True,
+            "is_open": True,
+            "cleaniness_rating": 4.7,
+            "description": "The toilets in this building are always clean and have water running 80% of the time."
         }
         
     ]
