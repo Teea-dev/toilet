@@ -11,23 +11,23 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-
-interface DataFormat {
-  building: string;
-  building_code: string;
-  building_status: string;
-  rooms: {
-    [key: string]: {
-      roomNumber: string;
-      slot: { openTime: string; closeTime: string; status: string }[];
-    };
-  };
-  coordinates: [number, number];
-  distance: number;
+interface ToiletDataFormat {
+  id: number;
+  name: string;
+  location: string;
+  latitude: number;
+  longitude: number;
+  is_male: boolean;
+  is_female: boolean;
+  is_accessible: boolean;
+  is_open: boolean;
+  cleanliness_rating: number;
+  description: string;
+  distance?: number;
 }
 
 export default function Home() {
-  const [data, setData] = useState<DataFormat[]>([]);
+  const [data, setData] = useState<ToiletDataFormat[]>([]);
   const [userPosition, setUserPosition] = useState<[number, number]>([0, 0]);
   const [loading, setLoading] = useState<boolean>(true);
   const [activeBuilding, setActiveBuilding] = useState<string | null>(null);
@@ -43,10 +43,12 @@ export default function Home() {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           async (position) => {
-            setUserPosition([
+            const userCoords: [number, number] = [
               position.coords.latitude,
               position.coords.longitude,
-            ]);
+            ];
+            setUserPosition(userCoords);
+
             try {
               const res = await fetch("/api/data", {
                 method: "POST",
@@ -54,11 +56,11 @@ export default function Home() {
                   "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                  userPosition,
+                  userPosition: userCoords,
                 }),
               });
-              const data = await res.json();
-              setData(data);
+              const fetchedData = await res.json();
+              setData(fetchedData);
             } catch (err) {
               console.error(err);
             } finally {
@@ -68,7 +70,7 @@ export default function Home() {
           async (error) => {
             console.error("Error", error);
 
-            const res = await fetch("/api/data");
+            const res = await fetch(`http://localhost:5000/api/toilets`);
             const defaultData = await res.json();
             setData(defaultData);
 
@@ -78,7 +80,7 @@ export default function Home() {
       } else {
         console.error("Geolocation is not supported by this browser");
 
-        const res = await fetch("/api/data", {
+        const res = await fetch(`http://localhost:5000/api/toilets`, {
           method: "GET",
         });
         const defaultData = await res.json();
@@ -135,12 +137,12 @@ export default function Home() {
                   Toilet access may be restricted to specific colleges or
                   departments
                 </li>
-                 <li>
+                <li>
                   Displayed availability only reflects official class schedules
-                </li> 
+                </li>
                 <li>
                   Rooms may be occupied by unofficial meetings or study groups
-                </li> 
+                </li>
                 <li>Click on indicators to view toilets for that building</li>
               </ul>
             </PopoverContent>
@@ -185,12 +187,6 @@ export default function Home() {
                     Toilet access may be restricted to specific colleges or
                     departments
                   </li>
-                  {/* <li>
-                  Displayed availability only reflects official class schedules
-                </li> */}
-                  {/* <li>
-                  Rooms may be occupied by unofficial meetings or study groups
-                </li> */}
                   <li>Click on indicators to view toilets for that building</li>
                 </ul>
               </PopoverContent>
