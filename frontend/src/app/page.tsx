@@ -11,23 +11,23 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+
 interface ToiletDataFormat {
   id: number;
   name: string;
-  location: string;
   latitude: number;
   longitude: number;
   is_male: boolean;
   is_female: boolean;
   is_accessible: boolean;
   is_open: boolean;
-  cleanliness_rating: number;
+  cleaniness_rating: number;
   description: string;
   distance?: number;
 }
 
 export default function Home() {
-  const [data, setData] = useState<ToiletDataFormat[]>([]);
+  const [toilets, setToilets] = useState<ToiletDataFormat[]>([]);
   const [userPosition, setUserPosition] = useState<[number, number]>([0, 0]);
   const [loading, setLoading] = useState<boolean>(true);
   const [activeBuilding, setActiveBuilding] = useState<string | null>(null);
@@ -37,59 +37,67 @@ export default function Home() {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchToiletData = async () => {
       setLoading(true);
 
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          async (position) => {
-            const userCoords: [number, number] = [
-              position.coords.latitude,
-              position.coords.longitude,
-            ];
-            setUserPosition(userCoords);
-
-            try {
-              const res = await fetch("/api/data", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  userPosition: userCoords,
-                }),
-              });
-              const fetchedData = await res.json();
-              setData(fetchedData);
-            } catch (err) {
-              console.error(err);
-            } finally {
-              setLoading(false);
+      try {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            async (position) => {
+              const lat = position.coords.latitude;
+              const lng = position.coords.longitude;
+              
+              setUserPosition([lat, lng]);
+              
+              // Call the backend API with user coordinates
+              try {
+                const response = await fetch("/api/open-toillets", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({ lat, lng }),
+                });
+                
+                if (!response.ok) {
+                  throw new Error(`Failed to fetch toilet data: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                setToilets(data);
+              } catch (error) {
+                console.error("Error fetching toilets with location:", error);
+                // Fallback to default fetching without coordinates
+                const defaultResponse = await fetch("/api/open-toillets");
+                const defaultData = await defaultResponse.json();
+                setToilets(defaultData);
+              }
+            },
+            async (error) => {
+              console.error("Geolocation error:", error);
+              
+              // Fallback: fetch all toilets without location filtering
+              const response = await fetch("/api/open-toillets");
+              const data = await response.json();
+              setToilets(data);
             }
-          },
-          async (error) => {
-            console.error("Error", error);
-
-            const res = await fetch(`http://localhost:5000/api/toilets`);
-            const defaultData = await res.json();
-            setData(defaultData);
-
-            setLoading(false);
-          }
-        );
-      } else {
-        console.error("Geolocation is not supported by this browser");
-
-        const res = await fetch(`http://localhost:5000/api/toilets`, {
-          method: "GET",
-        });
-        const defaultData = await res.json();
-        setData(defaultData);
+          );
+        } else {
+          console.warn("Geolocation is not supported by this browser");
+          
+          // Fetch all toilets without location filtering
+          const response = await fetch("/api/toillets");
+          const data = await response.json();
+          setToilets(data);
+        }
+      } catch (error) {
+        console.error("Error in toilet data fetching:", error);
+      } finally {
         setLoading(false);
       }
     };
 
-    fetchData();
+    fetchToiletData();
   }, []);
 
   if (loading) {
@@ -98,7 +106,7 @@ export default function Home() {
 
   return (
     <main className="flex flex-col sm:flex-row sm:gap-4 h-screen">
-      <div className="basis-2/5  sm-h-full order-last sm:order-first py-4 sm:px-0 sm:py-2 bg-[#18181b]/90 overflow-hidden sm:flex sm:flex-col ">
+      <div className="basis-2/5 sm-h-full order-last sm:order-first py-4 sm:px-0 sm:py-2 bg-[#18181b]/90 overflow-hidden sm:flex sm:flex-col">
         <div className="w-full h-20 pl-8 pr-4 hidden sm:flex sm:justify-between items-center">
           <Popover>
             <PopoverTrigger>
@@ -133,17 +141,10 @@ export default function Home() {
             <PopoverContent className="bg-zinc-950 border-zinc-600 text-zinc-100 w-72">
               <div className="font-bold mb-1">Important Notes:</div>
               <ul className="list-disc pl-4">
-                <li>
-                  Toilet access may be restricted to specific colleges or
-                  departments
-                </li>
-                <li>
-                  Displayed availability only reflects official class schedules
-                </li>
-                <li>
-                  Rooms may be occupied by unofficial meetings or study groups
-                </li>
-                <li>Click on indicators to view toilets for that building</li>
+                <li>Some toilets may require special access or keys</li>
+                <li>Opening hours may vary during holidays and special events</li>
+                <li>Click on map markers to see detailed information</li>
+                <li>For emergencies, look for toilets marked as "Open"</li>
               </ul>
             </PopoverContent>
           </Popover>
@@ -183,17 +184,14 @@ export default function Home() {
               <PopoverContent className="bg-zinc-900 border-zinc-600 text-zinc-200 w-72">
                 <div className="font-bold mb-1">Important Notes:</div>
                 <ul className="list-disc pl-4">
-                  <li>
-                    Toilet access may be restricted to specific colleges or
-                    departments
-                  </li>
-                  <li>Click on indicators to view toilets for that building</li>
+                  <li>Some toilets may require special access or keys</li>
+                  <li>Click on indicators to view toilet details</li>
                 </ul>
               </PopoverContent>
             </Popover>
           </div>
           <Left
-            data={data}
+            data={toilets}
             activeBuilding={activeBuilding || ""}
             setActiveBuilding={setActiveBuilding}
           />
@@ -201,7 +199,7 @@ export default function Home() {
       </div>
       <div className="h-[60vh] basis-3/5 sm:h-screen">
         <Map
-          data={data}
+          data={toilets}
           userPosition={userPosition}
           handleMarkerClick={handleMarkerClick}
         />

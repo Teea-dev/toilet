@@ -3,14 +3,13 @@ import { NextResponse } from "next/server";
 interface ToiletDataFormat {
   id: number;
   name: string;
-  location: string;
   latitude: number;
   longitude: number;
   is_male: boolean;
   is_female: boolean;
   is_accessible: boolean;
   is_open: boolean;
-  cleanliness_rating: number;
+  cleaniness_rating: number;
   description: string;
   distance?: number;
 }

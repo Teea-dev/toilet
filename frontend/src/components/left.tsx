@@ -1,4 +1,4 @@
-"use client ";
+"use client";
 import {
   Accordion,
   AccordionContent,
@@ -7,66 +7,52 @@ import {
 } from "./ui/accordion";
 import { Alert, AlertDescription } from "./ui/alert";
 
-interface DataFormat {
-  building: string;
-  building_code: string;
-  building_status: string;
-  rooms: {
-    [key: string]: {
-      roomNumber: string;
-      slot: { openTime: string; closeTime: string; status: string }[];
-    };
-  };
-  coordinates: [number, number];
+interface ToiletDataFormat {
+  id: number;
+  name: string;
+  latitude: number;
+  longitude: number;
+  is_male: boolean;
+  is_female: boolean;
+  is_accessible: boolean;
+  is_open: boolean;
+  cleaniness_rating: number;
+  description: string;
+  distance?: number;
 }
 
-function formatTime(date: Date): string {
-  return new Intl.DateTimeFormat("en-US", {
-    hour: "numeric",
-    minute: "numeric",
-    hour12: true,
-  }).format(date);
-}
-
-function StatusLabel(status: string) {
+function StatusLabel(status: boolean) {
   return (
-    <>
-      <div
-        className={` rounded-lg px-2 py-1 text-sm w-[fit-content]${
-          status === "open now"
-            ? "bg-green-500 text-green-50"
-            : status === "unavailable"
-            ? "bg-red-500 text-red-50"
-            : "bg-yellow-500 text-yellow-50"
-        } font-bold  px-2`}
-      >
-        {status}
-      </div>
-    </>
+    <div
+      className={`rounded-lg px-2 py-1 text-sm w-[fit-content] ${
+        status
+          ? "bg-green-500 text-green-50"
+          : "bg-red-500 text-red-50"
+      } font-bold px-2`}
+    >
+      {status ? "Open" : "Closed"}
+    </div>
   );
 }
 
-function StatusIndicator(status: string) {
+function StatusIndicator(status: boolean, accessible: boolean) {
   return (
     <div
       className={`h-2 w-2 rounded-full 
-            ${status === "unavailable" && "bg-red-400"}
-            ${status === "open now" && "bg-green-400"}
-            ${status === "opening soon" && "bg-amber-400"}
-                `}
+            ${!status && "bg-red-400"}
+            ${status && accessible && "bg-green-400"}
+            ${status && !accessible && "bg-amber-400"}
+        `}
     ></div>
   );
 }
-
-const date = new Date();
-const day = date.getDay();
 
 export default function Left({
   data,
   activeBuilding,
   setActiveBuilding,
 }: {
-  data: DataFormat[];
+  data: ToiletDataFormat[];
   activeBuilding: string;
   setActiveBuilding: (building: string) => void;
 }) {
@@ -74,16 +60,14 @@ export default function Left({
     return (
       <div className="flex justify-center items-center h-screen">
         <Alert className="mx-auto w-fit text-center">
-          <AlertDescription>No data available</AlertDescription>
+          <AlertDescription>No toilets available</AlertDescription>
         </Alert>
       </div>
     );
   }
+
   return (
     <div className="px-8">
-      {day === 0 ? (
-        <Alert className="mx-auto w-fit text-center">Today is Sunday</Alert>
-      ) : null}
       <Accordion
         type="single"
         collapsible
@@ -91,49 +75,48 @@ export default function Left({
         value={activeBuilding || ""}
         onValueChange={(value) => setActiveBuilding(value)}
       >
-        {data.map((building) => (
+        {data.map((toilet) => (
           <AccordionItem
-            key={building.building_code}
-            id={building.building_code}
-            value={building.building_code}
+            key={toilet.id}
+            id={toilet.id.toString()}
+            value={toilet.name}
           >
             <AccordionTrigger>
-              <div className=" flex justify-between w-[95%] text-left text-lg group items-center">
-                <div className="">
-                  {building.building_code} - {building.building}
+              <div className="flex justify-between w-[95%] text-left text-lg group items-center">
+                <div>
+                  {toilet.name}
                 </div>
-                <div>{StatusLabel(building.building_status)}</div>
+                <div>{StatusLabel(toilet.is_open)}</div>
               </div>
             </AccordionTrigger>
-            <AccordionContent className="divide-y didvide-dashed ">
-              {building.rooms &&
-                Object.entries(building.rooms).map(([roomNumber, room]) => {
-                  return (
-                    <>
-                      <div
-                        key={roomNumber}
-                        className="flex justify-between items-center py-2"
-                      >
-                        <div className="flex gap-4 items-center h-[fit-content]">
-                          <div className="w-18">
-                            {building.building_code} {roomNumber}
-                          </div>
-                          <div className="relative">
-                            {StatusIndicator(room.slot[0].status)}
-                          </div>
-                          <ul className="text-right">
-                            {room.slot.map((slot, index) => (
-                              <li key={index}>
-                                {formatTime(new Date(slot.openTime))} -{" "}
-                                {formatTime(new Date(slot.closeTime))}{" "}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-                    </>
-                  );
-                })}
+            <AccordionContent className="divide-y didvide-dashed">
+              <div className="py-2">
+                <div className="flex gap-4 items-center mb-2">
+                  <div className="relative">
+                    {StatusIndicator(toilet.is_open, toilet.is_accessible)}
+                  </div>
+                  <div className="font-medium">
+                    Cleanliness: {toilet.cleaniness_rating.toFixed(1)}/5
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {toilet.is_male && (
+                    <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">Male</span>
+                  )}
+                  {toilet.is_female && (
+                    <span className="bg-pink-100 text-pink-800 text-xs font-medium px-2.5 py-0.5 rounded">Female</span>
+                  )}
+                  {toilet.is_accessible && (
+                    <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Accessible</span>
+                  )}
+                </div>
+                {toilet.distance && (
+                  <div className="text-sm text-gray-400 mb-2">
+                    Distance: {toilet.distance.toFixed(2)} km
+                  </div>
+                )}
+                <p className="text-sm text-gray-300 mt-2">{toilet.description}</p>
+              </div>
             </AccordionContent>
           </AccordionItem>
         ))}
