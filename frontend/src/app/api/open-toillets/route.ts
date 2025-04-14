@@ -54,11 +54,11 @@ export async function GET() {
   try {
     // Fetch the default toilet data without location
     const response = await fetch(
-      "http://localhost:5000/api/toilets",
-      {
-        method: "GET",
-        cache: "no-cache",
-      }
+      "http://localhost:5000/api/open-toillets",
+      // {
+      //   method: "GET",
+      //   cache: "no-cache",
+      // }
     );
 
     if (!response.ok) {

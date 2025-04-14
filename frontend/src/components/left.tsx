@@ -56,7 +56,10 @@ export default function Left({
   activeBuilding: string;
   setActiveBuilding: (building: string) => void;
 }) {
-  if (data.length === 0) {
+  // Check if data is an array, if not, use an empty array
+  const toiletsArray = Array.isArray(data) ? data : [];
+
+  if (toiletsArray.length === 0) {
     return (
       <div className="flex justify-center items-center h-screen">
         <Alert className="mx-auto w-fit text-center">
@@ -75,7 +78,7 @@ export default function Left({
         value={activeBuilding || ""}
         onValueChange={(value) => setActiveBuilding(value)}
       >
-        {data.map((toilet) => (
+        {toiletsArray.map((toilet) => (
           <AccordionItem
             key={toilet.id}
             id={toilet.id.toString()}

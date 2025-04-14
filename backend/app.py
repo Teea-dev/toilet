@@ -162,6 +162,63 @@ def delete_toilet(toilet_id):
     
     return jsonify({'message': 'Toilet deleted successfully', 'toilet_id': toilet.id})
 
+@app.route('/api/open-toillets', methods=['GET', 'POST'])
+def get_open_toilets():
+    try:
+        # Check if coordinates are provided via POST request
+        if request.method == 'POST' and request.is_json:
+            data = request.json
+            lat = data.get('lat')
+            lng = data.get('lng')
+        else:
+            # If not POST or not JSON, check for URL parameters
+            lat = request.args.get('latitude', type=float)
+            lng = request.args.get('longitude', type=float)
+        
+        # Query only open toilets
+        query = Toilet.query.filter_by(is_open=True)
+        
+        # Fetch all open toilets
+        toilets = query.all()
+        
+        toilet_list = []
+        for toilet in toilets:
+            toilet_data = {
+                'id': toilet.id,
+                'name': toilet.name,
+                'latitude': toilet.latitude,
+                'longitude': toilet.longitude,
+                'rating': toilet.rating,
+                'num_ratings': toilet.num_ratings,
+                'is_male': toilet.is_male,
+                'is_female': toilet.is_female,
+                'is_accessible': toilet.is_accessible,
+                'is_open': toilet.is_open,
+                'cleaniness_rating': toilet.cleaniness_rating,
+                'description': toilet.description
+            }
+            
+            # Calculate distance if coordinates provided
+            if lat is not None and lng is not None:
+                try:
+                    distance = haversine(float(lat), float(lng), toilet.latitude, toilet.longitude)
+                    toilet_data['distance'] = distance
+                except (TypeError, ValueError) as e:
+                    print(f"Error calculating distance: {e}")
+            
+            toilet_list.append(toilet_data)
+        
+        # Sort by distance if coordinates provided
+        if lat is not None and lng is not None:
+            toilet_list.sort(key=lambda x: x.get('distance', float('inf')))
+        
+        return jsonify(toilet_list)
+    
+    except Exception as e:
+        print(f"Error in get_open_toilets: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({"error": str(e)}), 500
 
 #Create the database
 with app.app_context():

@@ -31,6 +31,7 @@ export default function Home() {
   const [userPosition, setUserPosition] = useState<[number, number]>([0, 0]);
   const [loading, setLoading] = useState<boolean>(true);
   const [activeBuilding, setActiveBuilding] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const handleMarkerClick = (building: string) => {
     setActiveBuilding(building);
@@ -39,6 +40,7 @@ export default function Home() {
   useEffect(() => {
     const fetchToiletData = async () => {
       setLoading(true);
+      setError(null);
 
       try {
         if (navigator.geolocation) {
@@ -51,7 +53,7 @@ export default function Home() {
               
               // Call the backend API with user coordinates
               try {
-                const response = await fetch("/api/open-toillets", {
+                const response = await fetch("http://localhost:5000/api/open-toillets", {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
@@ -64,34 +66,86 @@ export default function Home() {
                 }
                 
                 const data = await response.json();
-                setToilets(data);
+                
+                // Ensure data is an array
+                if (Array.isArray(data)) {
+                  setToilets(data);
+                } else if (data.error) {
+                  setError(data.error);
+                  setToilets([]);
+                } else {
+                  setToilets([]);
+                  setError("Received invalid data format from server");
+                }
               } catch (error) {
                 console.error("Error fetching toilets with location:", error);
+                setError(`Error fetching data: ${error instanceof Error ? error.message : "Unknown error"}`);
+                
                 // Fallback to default fetching without coordinates
-                const defaultResponse = await fetch("/api/open-toillets");
-                const defaultData = await defaultResponse.json();
-                setToilets(defaultData);
+                try {
+                  const defaultResponse = await fetch("http://localhost:5000/api/open-toillets");
+                  if (!defaultResponse.ok) {
+                    throw new Error(`Failed to fetch default toilet data: ${defaultResponse.status}`);
+                  }
+                  const defaultData = await defaultResponse.json();
+                  if (Array.isArray(defaultData)) {
+                    setToilets(defaultData);
+                  } else {
+                    setToilets([]);
+                  }
+                } catch (fallbackError) {
+                  console.error("Fallback fetch failed:", fallbackError);
+                  setToilets([]);
+                }
               }
             },
             async (error) => {
               console.error("Geolocation error:", error);
+              setError(`Geolocation error: ${error.message}`);
               
               // Fallback: fetch all toilets without location filtering
-              const response = await fetch("/api/open-toillets");
-              const data = await response.json();
-              setToilets(data);
+              try {
+                const response = await fetch("http://localhost:5000/api/open-toillets");
+                if (!response.ok) {
+                  throw new Error(`Failed to fetch toilet data: ${response.status}`);
+                }
+                const data = await response.json();
+                if (Array.isArray(data)) {
+                  setToilets(data);
+                } else {
+                  setToilets([]);
+                }
+              } catch (fallbackError) {
+                console.error("Fallback fetch failed:", fallbackError);
+                setToilets([]);
+              }
             }
           );
         } else {
           console.warn("Geolocation is not supported by this browser");
+          setError("Geolocation is not supported by this browser");
           
           // Fetch all toilets without location filtering
-          const response = await fetch("/api/toillets");
-          const data = await response.json();
-          setToilets(data);
+          try {
+            const response = await fetch("http://localhost:5000/api/open-toillets");
+            if (!response.ok) {
+              throw new Error(`Failed to fetch toilet data: ${response.status}`);
+            }
+            const data = await response.json();
+            if (Array.isArray(data)) {
+              setToilets(data);
+            } else {
+              setToilets([]);
+            }
+          } catch (error) {
+            console.error("Error fetching toilets:", error);
+            setToilets([]);
+          }
         }
       } catch (error) {
         console.error("Error in toilet data fetching:", error);
+        setError(`Error: ${error instanceof Error ? error.message : String(error)}`);
+        setToilets([]);
       } finally {
         setLoading(false);
       }
@@ -108,6 +162,7 @@ export default function Home() {
     <main className="flex flex-col sm:flex-row sm:gap-4 h-screen">
       <div className="basis-2/5 sm-h-full order-last sm:order-first py-4 sm:px-0 sm:py-2 bg-[#18181b]/90 overflow-hidden sm:flex sm:flex-col">
         <div className="w-full h-20 pl-8 pr-4 hidden sm:flex sm:justify-between items-center">
+          {error && <div className="text-red-500">Error: {error}</div>}
           <Popover>
             <PopoverTrigger>
               <svg
@@ -151,6 +206,7 @@ export default function Home() {
         </div>
         <ScrollArea className="h-full">
           <div className="w-full h-20 pl-8 pr-8 sm:hidden flex justify-between items-center">
+            {error && <div className="text-red-500">Error: {error}</div>}
             <Popover>
               <PopoverTrigger className="">
                 <svg
