@@ -80,7 +80,7 @@ export default function Map({
         mapRef.current = null;
       }
     };
-  }, [mapboxToken, center, zoom, pitch]);
+  }, [mapboxToken ]);
 
   // Add markers when data or user position changes
   useEffect(() => {
