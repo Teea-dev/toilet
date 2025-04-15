@@ -1,4 +1,5 @@
 # from urllib import request
+import os
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
@@ -220,10 +221,15 @@ def get_open_toilets():
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500
 
+@app.route('/', methods=['GET'])
+def index():
+    return jsonify({"status": "ok", "message": "Toilet Finder API is running"}), 200    
+
 #Create the database
 with app.app_context():
     
     db.create_all()    
     
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)    
+    port = int(os.environ.get("PORT", 5000))
+    app.run(debug=False, host='0.0.0.0', port=port) 
