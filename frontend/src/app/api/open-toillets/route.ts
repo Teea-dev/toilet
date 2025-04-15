@@ -21,7 +21,7 @@ export async function POST(req: Request) {
 
     // Using correct parameter names in the query string
     const response = await fetch(
-      `http://localhost:5000/api/toilets?latitude=${lat}&longitude=${lng}`,
+      `https://${process.env.NEXT_PUBLIC_API_URL}/api/toilets?latitude=${lat}&longitude=${lng}`,
       {
         method: "GET",
         headers: {
@@ -54,7 +54,7 @@ export async function GET() {
   try {
     // Fetch the default toilet data without location
     const response = await fetch(
-      "http://localhost:5000/api/open-toillets",
+      `https://${process.env.NEXT_PUBLIC_API_URL}/api/open-toillets`,
       // {
       //   method: "GET",
       //   cache: "no-cache",

@@ -48,25 +48,30 @@ export default function Home() {
             async (position) => {
               const lat = position.coords.latitude;
               const lng = position.coords.longitude;
-              
+
               setUserPosition([lat, lng]);
-              
+
               // Call the backend API with user coordinates
               try {
-                const response = await fetch("http://localhost:5000/api/open-toillets", {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({ lat, lng }),
-                });
-                
+                const response = await fetch(
+                  `https://${process.env.NEXT_PUBLIC_API_URL}/api/open-toillets`,
+                  {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ lat, lng }),
+                  }
+                );
+
                 if (!response.ok) {
-                  throw new Error(`Failed to fetch toilet data: ${response.status}`);
+                  throw new Error(
+                    `Failed to fetch toilet data: ${response.status}`
+                  );
                 }
-                
+
                 const data = await response.json();
-                
+
                 // Ensure data is an array
                 if (Array.isArray(data)) {
                   setToilets(data);
@@ -79,13 +84,21 @@ export default function Home() {
                 }
               } catch (error) {
                 console.error("Error fetching toilets with location:", error);
-                setError(`Error fetching data: ${error instanceof Error ? error.message : "Unknown error"}`);
-                
+                setError(
+                  `Error fetching data: ${
+                    error instanceof Error ? error.message : "Unknown error"
+                  }`
+                );
+
                 // Fallback to default fetching without coordinates
                 try {
-                  const defaultResponse = await fetch("http://localhost:5000/api/open-toillets");
+                  const defaultResponse = await fetch(
+                    `https://${process.env.NEXT_PUBLIC_API_URL}/api/open-toillets`
+                  );
                   if (!defaultResponse.ok) {
-                    throw new Error(`Failed to fetch default toilet data: ${defaultResponse.status}`);
+                    throw new Error(
+                      `Failed to fetch default toilet data: ${defaultResponse.status}`
+                    );
                   }
                   const defaultData = await defaultResponse.json();
                   if (Array.isArray(defaultData)) {
@@ -102,12 +115,16 @@ export default function Home() {
             async (error) => {
               console.error("Geolocation error:", error);
               setError(`Geolocation error: ${error.message}`);
-              
+
               // Fallback: fetch all toilets without location filtering
               try {
-                const response = await fetch("http://localhost:5000/api/open-toillets");
+                const response = await fetch(
+                  `https://${process.env.NEXT_PUBLIC_API_URL}/api/open-toillets`
+                );
                 if (!response.ok) {
-                  throw new Error(`Failed to fetch toilet data: ${response.status}`);
+                  throw new Error(
+                    `Failed to fetch toilet data: ${response.status}`
+                  );
                 }
                 const data = await response.json();
                 if (Array.isArray(data)) {
@@ -124,12 +141,16 @@ export default function Home() {
         } else {
           console.warn("Geolocation is not supported by this browser");
           setError("Geolocation is not supported by this browser");
-          
+
           // Fetch all toilets without location filtering
           try {
-            const response = await fetch("http://localhost:5000/api/open-toillets");
+            const response = await fetch(
+              `https://${process.env.NEXT_PUBLIC_API_URL}/api/open-toillets`
+            );
             if (!response.ok) {
-              throw new Error(`Failed to fetch toilet data: ${response.status}`);
+              throw new Error(
+                `Failed to fetch toilet data: ${response.status}`
+              );
             }
             const data = await response.json();
             if (Array.isArray(data)) {
@@ -144,7 +165,9 @@ export default function Home() {
         }
       } catch (error) {
         console.error("Error in toilet data fetching:", error);
-        setError(`Error: ${error instanceof Error ? error.message : String(error)}`);
+        setError(
+          `Error: ${error instanceof Error ? error.message : String(error)}`
+        );
         setToilets([]);
       } finally {
         setLoading(false);
@@ -197,9 +220,13 @@ export default function Home() {
               <div className="font-bold mb-1">Important Notes:</div>
               <ul className="list-disc pl-4">
                 <li>Some toilets may require special access or keys</li>
-                <li>Opening hours may vary during holidays and special events</li>
+                <li>
+                  Opening hours may vary during holidays and special events
+                </li>
                 <li>Click on map markers to see detailed information</li>
-                <li>For emergencies, look for toilets marked as "Open"</li>
+                <li>
+                  For emergencies, look for toilets marked as &quot;Open&quot;
+                </li>
               </ul>
             </PopoverContent>
           </Popover>
