@@ -25,9 +25,7 @@ function StatusLabel(status: boolean) {
   return (
     <div
       className={`rounded-lg px-2 py-1 text-sm w-[fit-content] ${
-        status
-          ? "bg-green-500 text-green-50"
-          : "bg-red-500 text-red-50"
+        status ? "bg-green-500 text-green-50" : "bg-red-500 text-red-50"
       } font-bold px-2`}
     >
       {status ? "Open" : "Closed"}
@@ -85,8 +83,8 @@ export default function Left({
             value={toilet.name}
           >
             <AccordionTrigger>
-              <div className="flex justify-between w-[95%] text-left text-lg group items-center">
-                <div>
+              <div className="flex justify-between w-[95%] text-left text-lg group cursor-pointer items-center">
+                <div className=" hover:underline text-white ">
                   {toilet.name}
                 </div>
                 <div>{StatusLabel(toilet.is_open)}</div>
@@ -98,19 +96,25 @@ export default function Left({
                   <div className="relative">
                     {StatusIndicator(toilet.is_open, toilet.is_accessible)}
                   </div>
-                  <div className="font-medium">
+                  <div className="font-medium text-white">
                     Cleanliness: {toilet.cleaniness_rating.toFixed(1)}/5
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-2 mb-2">
                   {toilet.is_male && (
-                    <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">Male</span>
+                    <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                      Male
+                    </span>
                   )}
                   {toilet.is_female && (
-                    <span className="bg-pink-100 text-pink-800 text-xs font-medium px-2.5 py-0.5 rounded">Female</span>
+                    <span className="bg-pink-100 text-pink-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                      Female
+                    </span>
                   )}
                   {toilet.is_accessible && (
-                    <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Accessible</span>
+                    <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                      Accessible
+                    </span>
                   )}
                 </div>
                 {toilet.distance && (
@@ -118,7 +122,9 @@ export default function Left({
                     Distance: {toilet.distance.toFixed(2)} km
                   </div>
                 )}
-                <p className="text-sm text-gray-300 mt-2">{toilet.description}</p>
+                <p className="text-sm text-gray-300 mt-2">
+                  {toilet.description}
+                </p>
               </div>
             </AccordionContent>
           </AccordionItem>
