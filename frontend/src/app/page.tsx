@@ -185,7 +185,7 @@ export default function Home() {
     <main className="flex flex-col sm:flex-row sm:gap-4 h-screen">
       <div className="basis-2/5 sm-h-full order-last sm:order-first py-4 sm:px-0 sm:py-2 bg-[#18181b]/90 overflow-hidden sm:flex sm:flex-col">
         <div className="w-full h-20 pl-8 pr-4 hidden sm:flex sm:justify-between items-center">
-          {error && <div className="text-red-500">Error: {error}</div>}
+          {/* {error && <div className="text-red-500">Error: {error}</div>} */}
           <Popover>
             <PopoverTrigger>
               <svg
