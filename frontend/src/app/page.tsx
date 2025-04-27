@@ -113,7 +113,6 @@ export default function Home() {
               }
             },
             async (error) => {
-              console.error("Geolocation error:", error);
               setError(`Geolocation error: ${error.message}`);
 
               // Fallback: fetch all toilets without location filtering
@@ -187,7 +186,7 @@ export default function Home() {
         <div className="w-full h-20 pl-8 pr-4 hidden sm:flex sm:justify-between items-center">
           {/* {error && <div className="text-red-500">Error: {error}</div>} */}
           <Popover>
-            <PopoverTrigger>
+            <PopoverTrigger className=" cursor-pointer">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -197,19 +196,19 @@ export default function Home() {
               >
                 <path
                   d="M22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12Z"
-                  stroke="currentColor"
+                  stroke="white"
                   strokeWidth="1.7"
                 />
                 <path
                   d="M12.2422 17V12C12.2422 11.5286 12.2422 11.2929 12.0957 11.1464C11.9493 11 11.7136 11 11.2422 11"
-                  stroke="currentColor"
+                  stroke="white"
                   strokeWidth="1.7"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 />
                 <path
                   d="M11.992 8H12.001"
-                  stroke="currentColor"
+                  stroke="white"
                   strokeWidth="2.2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -235,13 +234,13 @@ export default function Home() {
           <div className="w-full h-20 pl-8 pr-8 sm:hidden flex justify-between items-center">
             {error && <div className="text-red-500">Error: {error}</div>}
             <Popover>
-              <PopoverTrigger className="">
+              <PopoverTrigger className=" cursor-pointer">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
                   width={28}
                   height={28}
-                  fill={"none"}
+                  fill={"white"}
                 >
                   <path
                     d="M22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12Z"

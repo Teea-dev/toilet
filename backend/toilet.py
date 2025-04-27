@@ -22,7 +22,11 @@ def populate_database():
             "is_accessible": True,
             "is_open": False,
             "cleaniness_rating": 4.2,
-            "description": "Modern facility with multiple stalls for both male and female students."
+            "description": "Modern facility with multiple stalls for both male and female students.",
+            "opening_time": "08:00",
+            "closing_time": "17:00",
+            "open_saturday": False,
+            "open_sunday": False,
         },
         {
             "name": "Access Bank Toilet",
@@ -33,7 +37,11 @@ def populate_database():
             "is_accessible": True,
             "is_open": True,
             "cleaniness_rating": 4.5,
-            "description": "Spacious and well-maintained restroom near study areas."
+            "description": "Spacious and well-maintained restroom near study areas.",
+            "opening_time": "08:00",
+            "closing_time": "16:00",
+            "open_saturday": False,
+            "open_sunday": False
         },
         {
             "name": "Arts Faculty Toilet",
@@ -44,7 +52,11 @@ def populate_database():
             "is_accessible": True,
             "is_open": True,
             "cleaniness_rating": 3.7,
-            "description": "Basic facility with limited accessibility."
+            "description": "Basic facility with limited accessibility.",
+            "opening_time": "07:30",
+            "closing_time": "18:00",
+             "open_saturday": False,
+            "open_sunday": False
         },
         {
             "name": "Student Eco-Friendly Center",
@@ -55,7 +67,11 @@ def populate_database():
             "is_accessible": True,
             "is_open": True,
             "cleaniness_rating": 4.7,
-            "description": "Clean toilets with comfortable area to sit, read and charge."
+            "description": "Clean toilets with comfortable area to sit, read and charge.",
+            "opening_time": "08:00",
+            "closing_time": "16:00",
+             "open_saturday": False,
+            "open_sunday": False
         },
          {
             "name": "U&I Toilet",
@@ -66,7 +82,9 @@ def populate_database():
             "is_accessible": True,
             "is_open": True,
             "cleaniness_rating": 4.7,
-            "description": "Ask at the reception if you can use the toilet and you would be directed to it (Dont be shy they dont bite). Clean toilets with water running all the time ."
+            "description": "Ask at the reception if you can use the toilet and you would be directed to it (Dont be shy they dont bite). Clean toilets with water running all the time .",
+            "opening_time": "09:00",
+            "closing_time": "21:00"
         }
         ,
          {
@@ -78,7 +96,9 @@ def populate_database():
             "is_accessible": True,
             "is_open": True,
             "cleaniness_rating": 4.7,
-            "description": "The toilets at Jaja are good but it can be restricted at times. When you get into the building walk straight and you will see the toilets on your left. The toilets are clean and have running water."
+            "description": "The toilets at Jaja are good but it can be restricted at times. When you get into the building walk straight and you will see the toilets on your left. The toilets are clean and have running water.",
+            "opening_time": "08:00",
+            "closing_time": "22:00"
         }
         ,
          {
@@ -90,7 +110,9 @@ def populate_database():
             "is_accessible": True,
             "is_open": True,
             "cleaniness_rating": 4.7,
-            "description": "The toilets at UI Hotels are  clean and always have running water. Ask the security at the gate if you can't find the toilet and they will direct you to it."
+            "description": "The toilets at UI Hotels are  clean and always have running water. Ask the security at the gate if you can't find the toilet and they will direct you to it.",
+            "opening_time": "00:00",  
+            "closing_time": "23:00"
         }
         ,
          {
@@ -102,7 +124,9 @@ def populate_database():
             "is_accessible": True,
             "is_open": True,
             "cleaniness_rating": 3.7,
-            "description": "The toilets at UI Central Mosque are alright "
+            "description": "The toilets at UI Central Mosque are alright ",
+            "opening_time": "05:00",
+            "closing_time": "21:00"
         }
         ,
          {
@@ -114,7 +138,9 @@ def populate_database():
             "is_accessible": True,
             "is_open": True,
             "cleaniness_rating": 3.7,
-            "description": "The toilets in this building are always clean and have water running 80% of the time . The toilets that are always opened are  located on the first floor of the building. The downside is the toilets are for lecturers hence you need to be careful"
+            "description": "The toilets in this building are always clean and have water running 80% of the time . The toilets that are always opened are  located on the first floor of the building. The downside is the toilets are for lecturers hence you need to be careful",
+            "opening_time": "08:00",
+            "closing_time": "16:00",
         }
         ,
          {
@@ -126,7 +152,11 @@ def populate_database():
             "is_accessible": True,
             "is_open": True,
             "cleaniness_rating": 4.7,
-            "description": "The toilets in this building are always clean and have water running 80% of the time."
+            "description": "The toilets in this building are always clean and have water running 80% of the time.",
+             "opening_time": "07:00",
+            "closing_time": "17:00",
+            "open_saturday": False,
+            "open_sunday": False
         }
         
     ]
@@ -137,6 +167,19 @@ def populate_database():
         
         # Add new toilets
         for toilet_data in UI_TOILET_LOCATIONS:
+            default_days = {
+                "monday": True,
+                "tuesday": True,
+                "wednesday": True,
+                "thursday": True,
+                "friday": True,
+                "saturday": False,
+                "sunday": False
+            }
+            # Add default days to the toilet data
+            for day in default_days:
+                if day not in toilet_data:
+                    toilet_data[day] = default_days[day]
             new_toilet = Toilet(**toilet_data, rating=0.0, num_ratings=0)
             db.session.add(new_toilet)
         
@@ -160,7 +203,16 @@ def export_toilets_to_json():
                 "is_accessible": toilet.is_accessible,
                 "is_open": toilet.is_open,
                 "cleaniness_rating": toilet.cleaniness_rating,
-                "description": toilet.description
+                "description": toilet.description,
+                "opening_time": toilet.opening_time,
+                "closing_time": toilet.closing_time,
+                "open_monday": toilet.open_monday,
+                "open_tuesday": toilet.open_tuesday,
+                "open_wednesday": toilet.open_wednesday,
+                "open_thursday": toilet.open_thursday,
+                "open_friday": toilet.open_friday,
+                "open_saturday": toilet.open_saturday,
+                "open_sunday": toilet.open_sunday
             }
             toilet_list.append(toilet_dict)
         
@@ -192,8 +244,9 @@ def main():
     print("1. Populate Database with Predefined Locations")
     print("2. Export Current Toilets to JSON")
     print("3. Import Toilets from JSON")
+    print("4. Update Database schema (add opening hours field)")
     
-    choice = input("Enter your choice (1-3): ")
+    choice = input("Enter your choice (1-4): ")
     
     if choice == '1':
         populate_database()
@@ -202,6 +255,10 @@ def main():
     elif choice == '3':
         file_path = input("Enter the path to the JSON file: ")
         import_toilets_from_json(file_path)
+    elif choice == '4':
+        with app.app_context():
+            db.create_all()
+            print("Database schema updated successfully.")    
     else:
         print("Invalid choice. Exiting.")
 
