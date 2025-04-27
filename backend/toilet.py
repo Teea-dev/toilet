@@ -168,13 +168,13 @@ def populate_database():
         # Add new toilets
         for toilet_data in UI_TOILET_LOCATIONS:
             default_days = {
-                "monday": True,
-                "tuesday": True,
-                "wednesday": True,
-                "thursday": True,
-                "friday": True,
-                "saturday": False,
-                "sunday": False
+                "open_monday": True,
+                "open_tuesday": True,
+                "open_wednesday": True,
+                "open_thursday": True,
+                "open_friday": True,
+                "open_saturday": False,
+                "open_sunday": False
             }
             # Add default days to the toilet data
             for day in default_days:
@@ -249,6 +249,8 @@ def main():
     choice = input("Enter your choice (1-4): ")
     
     if choice == '1':
+        # First recreate tables to ensure schema is up to date
+        create_tables()
         populate_database()
     elif choice == '2':
         export_toilets_to_json()
@@ -257,7 +259,8 @@ def main():
         import_toilets_from_json(file_path)
     elif choice == '4':
         with app.app_context():
-            db.create_all()
+            db.drop_all()  # Drop existing tables
+            db.create_all()  # Recreate with updated schema
             print("Database schema updated successfully.")    
     else:
         print("Invalid choice. Exiting.")
