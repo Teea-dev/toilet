@@ -35,7 +35,6 @@ export default function Map({
   const [zoom, setZoom] = useState<number>(17.5);
   const [pitch, setPitch] = useState<number>(52);
 
-  // Get the token from environment variable
   const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
   function getColorByStatus(isOpen: boolean, isAccessible: boolean) {

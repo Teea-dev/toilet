@@ -1,5 +1,3 @@
-// Create a ToiletDetail.tsx component
-
 
 
 interface ToiletDataFormat {
