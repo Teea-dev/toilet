@@ -25,8 +25,7 @@ def populate_database():
             "description": "Modern facility with multiple stalls for both male and female students.",
             "opening_time": "08:00",
             "closing_time": "17:00",
-            "open_saturday": False,
-            "open_sunday": False,
+            
         },
         {
             "name": "Access Bank Toilet",
@@ -55,8 +54,7 @@ def populate_database():
             "description": "Basic facility with limited accessibility.",
             "opening_time": "07:30",
             "closing_time": "18:00",
-             "open_saturday": False,
-            "open_sunday": False
+            
         },
         {
             "name": "Student Eco-Friendly Center",
@@ -70,8 +68,7 @@ def populate_database():
             "description": "Clean toilets with comfortable area to sit, read and charge.",
             "opening_time": "10:00",
             "closing_time": "16:00",
-             "open_saturday": False,
-            "open_sunday": False
+            
         },
          {
             "name": "U&I Toilet",
@@ -112,7 +109,9 @@ def populate_database():
             "cleaniness_rating": 4.7,
             "description": "The toilets at UI Hotels are  clean and always have running water. Ask the security at the gate if you can't find the toilet and they will direct you to it.",
             "opening_time": "00:00",  
-            "closing_time": "23:00"
+            "closing_time": "23:00",
+             "open_saturday": True,
+            "open_sunday": True
         }
         ,
          {

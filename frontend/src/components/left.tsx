@@ -20,7 +20,7 @@ interface ToiletDataFormat {
   description: string;
   opening_time?: string;
   closing_time?: string;
-  open_satruday?: boolean;
+  open_saturday?: boolean;
   open_sunday?: boolean;
   distance?: number;
 }
@@ -115,12 +115,13 @@ export default function Left({
                   )}
                 </div>
                 <div className="text-sm text-white mb-2">
-                  {toilet.open_satruday && toilet.open_sunday ? (
+                  {toilet.open_saturday && toilet.open_sunday ? (
                     <span>Open on weekends</span>
                   ) : (
                     <span>Closed on weekends</span>
                   )}
                 </div>
+                
                 <div className="flex flex-wrap gap-2 mb-2">
                   {toilet.is_male && (
                     <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
