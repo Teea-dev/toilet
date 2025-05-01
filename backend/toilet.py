@@ -81,7 +81,9 @@ def populate_database():
             "cleaniness_rating": 4.7,
             "description": "Ask at the reception if you can use the toilet and you would be directed to it (Dont be shy they dont bite). Clean toilets with water running all the time .",
             "opening_time": "09:00",
-            "closing_time": "21:00"
+            "closing_time": "21:00",
+             "open_saturday": True,
+            "open_sunday": True
         }
         ,
          {
@@ -95,7 +97,9 @@ def populate_database():
             "cleaniness_rating": 4.7,
             "description": "The toilets at Jaja are good but it can be restricted at times. When you get into the building walk straight and you will see the toilets on your left. The toilets are clean and have running water.",
             "opening_time": "08:00",
-            "closing_time": "22:00"
+            "closing_time": "22:00",
+             "open_saturday": True,
+            "open_sunday": True
         }
         ,
          {
