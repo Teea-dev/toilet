@@ -65,7 +65,7 @@ export default function Home() {
                     body: JSON.stringify({ lat, lng }),
                   }
                 );
-                   console.log(response);
+                
                 if (!response.ok) {
                   throw new Error(
                     `Failed to fetch toilet data: ${response.status}`
@@ -154,6 +154,7 @@ export default function Home() {
               );
             }
             const data = await response.json();
+            console.log(data);
             if (Array.isArray(data)) {
               setToilets(data);
             } else {
