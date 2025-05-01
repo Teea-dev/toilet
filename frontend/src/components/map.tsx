@@ -15,6 +15,8 @@ interface ToiletDataFormat {
   is_open: boolean;
   cleaniness_rating: number;
   description: string;
+  opening_time?: string;
+  closing_time?: string;
   distance?: number;
 }
 

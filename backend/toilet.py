@@ -40,8 +40,8 @@ def populate_database():
             "description": "Spacious and well-maintained restroom near study areas.",
             "opening_time": "08:00",
             "closing_time": "16:00",
-            "open_saturday": False,
-            "open_sunday": False
+            "open_saturday": True,
+            "open_sunday": True
         },
         {
             "name": "Arts Faculty Toilet",
@@ -68,7 +68,7 @@ def populate_database():
             "is_open": True,
             "cleaniness_rating": 4.7,
             "description": "Clean toilets with comfortable area to sit, read and charge.",
-            "opening_time": "08:00",
+            "opening_time": "10:00",
             "closing_time": "16:00",
              "open_saturday": False,
             "open_sunday": False

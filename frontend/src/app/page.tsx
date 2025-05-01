@@ -23,6 +23,8 @@ interface ToiletDataFormat {
   is_open: boolean;
   cleaniness_rating: number;
   description: string;
+  opening_time?: string;
+  closing_time?: string;
   distance?: number;
 }
 
@@ -54,7 +56,7 @@ export default function Home() {
               // Call the backend API with user coordinates
               try {
                 const response = await fetch(
-                  `https://${process.env.NEXT_PUBLIC_API_URL}/api/open-toillets`,
+                  `https://${process.env.NEXT_PUBLIC_API_URL}/api/toilets`,
                   {
                     method: "POST",
                     headers: {
@@ -63,7 +65,7 @@ export default function Home() {
                     body: JSON.stringify({ lat, lng }),
                   }
                 );
-
+                   console.log(response);
                 if (!response.ok) {
                   throw new Error(
                     `Failed to fetch toilet data: ${response.status}`
@@ -93,7 +95,7 @@ export default function Home() {
                 // Fallback to default fetching without coordinates
                 try {
                   const defaultResponse = await fetch(
-                    `https://${process.env.NEXT_PUBLIC_API_URL}/api/open-toillets`
+                    `https://${process.env.NEXT_PUBLIC_API_URL}/api/toilets`
                   );
                   if (!defaultResponse.ok) {
                     throw new Error(
@@ -118,7 +120,7 @@ export default function Home() {
               // Fallback: fetch all toilets without location filtering
               try {
                 const response = await fetch(
-                  `https://${process.env.NEXT_PUBLIC_API_URL}/api/open-toillets`
+                  `https://${process.env.NEXT_PUBLIC_API_URL}/api/toilets`
                 );
                 if (!response.ok) {
                   throw new Error(
@@ -144,7 +146,7 @@ export default function Home() {
           // Fetch all toilets without location filtering
           try {
             const response = await fetch(
-              `https://${process.env.NEXT_PUBLIC_API_URL}/api/open-toillets`
+              `https://${process.env.NEXT_PUBLIC_API_URL}/api/toilets`
             );
             if (!response.ok) {
               throw new Error(

@@ -18,6 +18,10 @@ interface ToiletDataFormat {
   is_open: boolean;
   cleaniness_rating: number;
   description: string;
+  opening_time?: string;
+  closing_time?: string;
+  open_satruday?: boolean;
+  open_sunday?: boolean;
   distance?: number;
 }
 
@@ -99,6 +103,23 @@ export default function Left({
                   <div className="font-medium text-white">
                     Cleanliness: {toilet.cleaniness_rating.toFixed(1)}/5
                   </div>
+                </div>
+
+                <div className="text-sm text-white mb-2">
+                  {toilet.opening_time && toilet.closing_time ? (
+                    <span>
+                      {toilet.opening_time} - {toilet.closing_time}
+                    </span>
+                  ) : (
+                    <span>Opening and Closing times not available</span>
+                  )}
+                </div>
+                <div className="text-sm text-white mb-2">
+                  {toilet.open_satruday && toilet.open_sunday ? (
+                    <span>Open on weekends</span>
+                  ) : (
+                    <span>Closed on weekends</span>
+                  )}
                 </div>
                 <div className="flex flex-wrap gap-2 mb-2">
                   {toilet.is_male && (
