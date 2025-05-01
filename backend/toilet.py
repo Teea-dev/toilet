@@ -128,8 +128,11 @@ def populate_database():
             "is_open": True,
             "cleaniness_rating": 3.7,
             "description": "The toilets at UI Central Mosque are alright ",
-            "opening_time": "05:00",
-            "closing_time": "21:00"
+            "opening_time": "07:00",
+            "closing_time": "21:00",
+            "open_saturday": True,
+            "open_sunday": True
+            
         }
         ,
          {
@@ -158,8 +161,7 @@ def populate_database():
             "description": "The toilets in this building are always clean and have water running 80% of the time.",
              "opening_time": "07:00",
             "closing_time": "17:00",
-            "open_saturday": False,
-            "open_sunday": False
+           
         }
         
     ]
