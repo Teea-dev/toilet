@@ -13,7 +13,7 @@ interface ToiletDataFormat {
   description: string;
   distance?: number;
 }
-
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL ;
 export async function POST(req: Request) {
   try {
     // Extract user location from the request body
@@ -21,7 +21,7 @@ export async function POST(req: Request) {
 
     // Using correct parameter names in the query string
     const response = await fetch(
-      `http://localhost:5000/api/toilets?latitude=${lat}&longitude=${lng}`,
+      `${BACKEND_URL}/api/toilets?latitude=${lat}&longitude=${lng}`,
       {
         method: "GET",
         headers: {
@@ -54,7 +54,7 @@ export async function GET() {
   try {
     // Fetch the default toilet data without location
     const response = await fetch(
-      `http://localhost:5000/api/open-toillets`,
+      `${BACKEND_URL}/api/toilets`,
       // {
       //   method: "GET",
       //   cache: "no-cache",

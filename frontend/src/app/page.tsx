@@ -53,18 +53,15 @@ export default function Home() {
 
               setUserPosition([lat, lng]);
 
-              // Call the backend API with user coordinates
+              // Use your Next.js API route instead of calling Heroku directly
               try {
-                const response = await fetch(
-                  `http://localhost:5000/api/toilets`,
-                  {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ lat, lng }),
-                  }
-                );
+                const response = await fetch(`/api/open-toillets`, {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({ lat, lng }),
+                });
                 
                 if (!response.ok) {
                   throw new Error(
@@ -74,7 +71,6 @@ export default function Home() {
 
                 const data = await response.json();
 
-                // Ensure data is an array
                 if (Array.isArray(data)) {
                   setToilets(data);
                 } else if (data.error) {
@@ -92,11 +88,11 @@ export default function Home() {
                   }`
                 );
 
-                // Fallback to default fetching without coordinates
+                // Fallback to GET without coordinates
                 try {
-                  const defaultResponse = await fetch(
-                    `http://localhost:5000/api/toilets`
-                  );
+                  const defaultResponse = await fetch(`/api/open-toillets`, {
+                    method: "GET",
+                  });
                   if (!defaultResponse.ok) {
                     throw new Error(
                       `Failed to fetch default toilet data: ${defaultResponse.status}`
@@ -119,9 +115,9 @@ export default function Home() {
 
               // Fallback: fetch all toilets without location filtering
               try {
-                const response = await fetch(
-                  `http://localhost:5000/api/toilets`
-                );
+                const response = await fetch(`/api/open-toillets`, {
+                  method: "GET",
+                });
                 if (!response.ok) {
                   throw new Error(
                     `Failed to fetch toilet data: ${response.status}`
@@ -145,9 +141,9 @@ export default function Home() {
 
           // Fetch all toilets without location filtering
           try {
-            const response = await fetch(
-              `http://localhost:5000/api/toilets`
-            );
+            const response = await fetch(`/api/open-toillets`, {
+              method: "GET",
+            });
             if (!response.ok) {
               throw new Error(
                 `Failed to fetch toilet data: ${response.status}`
