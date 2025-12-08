@@ -78,6 +78,9 @@ export default function Map({
       map.on('load', () => {
         // We'll add the data source and layers here when data changes
       });
+
+      // Error logging
+      map.on('error', (e) => console.error('Mapbox error:', e));
     }
 
     return () => {
@@ -121,65 +124,80 @@ export default function Map({
       }))
     };
 
-    // Remove existing source and layers if they exist
-    if (map.getSource('toilets')) {
-      if (map.getLayer('toilets-closed')) map.removeLayer('toilets-closed');
-      if (map.getLayer('toilets-open')) map.removeLayer('toilets-open');
-      if (map.getLayer('toilets-accessible')) map.removeLayer('toilets-accessible');
-      map.removeSource('toilets');
+    // Helper function to add toilets source and layers
+    function addToiletsSourceAndLayers(map: mapboxgl.Map, geojsonData: GeoJSON.FeatureCollection) {
+      // Remove existing source and layers if they exist
+      if (map.getSource('toilets')) {
+        if (map.getLayer('toilets-closed')) map.removeLayer('toilets-closed');
+        if (map.getLayer('toilets-open')) map.removeLayer('toilets-open');
+        if (map.getLayer('toilets-accessible')) map.removeLayer('toilets-accessible');
+        map.removeSource('toilets');
+      }
+
+      // Add the data source
+      map.addSource('toilets', {
+        type: 'geojson',
+        data: geojsonData
+      });
+
+      // Add layers for different toilet statuses with larger circles
+      // Closed toilets (red)
+      map.addLayer({
+        id: 'toilets-closed',
+        type: 'circle',
+        source: 'toilets',
+        filter: ['==', ['get', 'status'], 'closed'],
+        paint: {
+          'circle-color': '#f87171', // red-400
+          'circle-radius': 6, // Larger size
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#ffffff',
+          'circle-opacity': 0.9
+        }
+      });
+
+      // Open toilets (amber)
+      map.addLayer({
+        id: 'toilets-open',
+        type: 'circle',
+        source: 'toilets',
+        filter: ['==', ['get', 'status'], 'open'],
+        paint: {
+          'circle-color': '#fbbf24', // amber-400
+          'circle-radius': 6, // Larger size
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#ffffff',
+          'circle-opacity': 0.9
+        }
+      });
+
+      // Accessible toilets (green)
+      map.addLayer({
+        id: 'toilets-accessible',
+        type: 'circle',
+        source: 'toilets',
+        filter: ['==', ['get', 'status'], 'accessible'],
+        paint: {
+          'circle-color': '#4ade80', // green-400
+          'circle-radius': 5, // Larger size
+          'circle-stroke-width': 1,
+          'circle-stroke-color': '#ffffff',
+          'circle-opacity': 0.9
+        }
+      });
     }
 
-    // Add the data source
-    map.addSource('toilets', {
-      type: 'geojson',
-      data: geojsonData
-    });
+    // Update toilets source and layers
+    if (!mapRef.current) return;
+    // const map = mapRef.current;
+    const doAdd = () => addToiletsSourceAndLayers(map, geojsonData);
 
-    // Add layers for different toilet statuses with larger circles
-    // Closed toilets (red)
-    map.addLayer({
-      id: 'toilets-closed',
-      type: 'circle',
-      source: 'toilets',
-      filter: ['==', ['get', 'status'], 'closed'],
-      paint: {
-        'circle-color': '#f87171', // red-400
-        'circle-radius': 6, // Larger size
-        'circle-stroke-width': 2,
-        'circle-stroke-color': '#ffffff',
-        'circle-opacity': 0.9
-      }
-    });
-
-    // Open toilets (amber)
-    map.addLayer({
-      id: 'toilets-open',
-      type: 'circle',
-      source: 'toilets',
-      filter: ['==', ['get', 'status'], 'open'],
-      paint: {
-        'circle-color': '#fbbf24', // amber-400
-        'circle-radius': 6, // Larger size
-        'circle-stroke-width': 2,
-        'circle-stroke-color': '#ffffff',
-        'circle-opacity': 0.9
-      }
-    });
-
-    // Accessible toilets (green)
-    map.addLayer({
-      id: 'toilets-accessible',
-      type: 'circle',
-      source: 'toilets',
-      filter: ['==', ['get', 'status'], 'accessible'],
-      paint: {
-        'circle-color': '#4ade80', // green-400
-        'circle-radius': 5, // Larger size
-        'circle-stroke-width': 1,
-        'circle-stroke-color': '#ffffff',
-        'circle-opacity': 0.9
-      }
-    });
+    if (!map.isStyleLoaded || !map.isStyleLoaded()) {
+      // Wait for style load
+      map.once('load', doAdd);
+    } else {
+      doAdd();
+    }
 
     // Add click interactions for all toilet layers
     const layerIds = ['toilets-closed', 'toilets-open', 'toilets-accessible'];
