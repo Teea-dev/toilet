@@ -23,7 +23,71 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 CORS(app)
 
-
+class Feedback(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), nullable=True)
+    email = db.Column(db.String(254), nullable=True)
+    message = db.Column(db.Text, nullable=False)
+    rating = db.Column(db.Float, nullable=True)
+    toilet_id = db.Column(db.Integer, db.ForeignKey('toilet.id'), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.timezone.utcnow)
+    
+    
+    def send_alert_email(subject: str, body: str):
+        # Placeholder for email sending logic
+        from sendgrid import SendGridAPIClient
+        from sendgrid.helpers.mail import Mail      
+        sg_key = os.environ.get('SENDGRID_API_KEY')
+        alert_email = os.environ.get('ALERT_EMAIL')
+        from_addr = os.environ.get('FROM_EMAIL')
+        if not sg_key or not alert_email:
+            app.logger.warning("SendGrid key or ALERT_EMAIL not set; skipping send.")
+            return False
+        message = Mail(from_email=from_addr, to_emails=alert_email, subject=subject, html_content=body)
+        try:
+            sg = SendGridAPIClient(sg_key)
+            response = sg.send(message)
+            app.logger.info(f"Alert email sent with status code {response.status_code}")
+            return True
+        except Exception as e:
+            app.logger.error(f"Failed to send alert email: {e}")
+            return False
+        
+        
+# Feedback endpoint
+@app.route('/api/feedback', methods=['POST'])        
+def submit_feedback():
+    data = request.get_json() or {}
+    
+    message = (data.get('message') or '').strip()
+    if not message:
+        return jsonify({'error': 'Message is required'}), 400
+    
+    email = data.get('email')
+    name = data.get('name')
+    rating = data.get('rating')
+    toilet_id = data.get('toilet_id')
+    
+    fb = Feedback(name=name, email=email, message=message, rating=rating, toilet_id=toilet_id)
+    db.session.add(fb)
+    db.session.commit()
+    
+    # Send alert email
+    subject = f"New feedback #{fb.id}"
+    body = f"""
+      <p><strong>Name:</strong> {name or 'Anonymous'}</p>
+      <p><strong>Email:</strong> {email or 'N/A'}</p>
+      <p><strong>Toilet ID:</strong> {toilet_id or 'N/A'}</p>
+      <p><strong>Rating:</strong> {rating or 'N/A'}</p>
+      <p><strong>Message:</strong><br/>{message}</p>
+      <p><small>Created: {fb.created_at}</small></p>
+    """
+    
+    send_alert_email(subject, body)
+    
+    return jsonify({'status':'ok','id': fb.id, 'message': 'Feedback submitted successfully'}), 201
+    
+    
 class Toilet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)

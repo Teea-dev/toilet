@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <!-- Toilet bowl -->
+  <path d="M6 14C6 14 5 15 5 18C5 21 7 24 10 25L9 28C9 29 10 30 11 30H21C22 30 23 29 23 28L22 25C25 24 27 21 27 18C27 15 26 14 26 14H6Z" fill="#10B981" stroke="#059669" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Toilet tank -->
+  <rect x="8" y="4" width="16" height="10" rx="2" fill="#10B981" stroke="#059669" stroke-width="1.5"/>
+  <!-- Flush button -->
+  <rect x="14" y="6" width="4" height="3" rx="1" fill="#059669"/>
+  <!-- Lid line -->
+  <path d="M8 14H24" stroke="#059669" stroke-width="1.5" stroke-linecap="round"/>
+</svg>
