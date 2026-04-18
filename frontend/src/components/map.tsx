@@ -1,9 +1,9 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { isToiletOpen } from "./isToiletOpenUtility";
-import type { Point } from 'geojson'; // Add this import
+import type { Point } from 'geojson';
 
 interface ToiletDataFormat {
   id: number;
@@ -41,9 +41,9 @@ export default function Map({
 }: MapProps) {
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
-  const [center, setCenter] = useState<[number, number]>([3.9042, 7.44108]);
-  const [zoom, setZoom] = useState<number>(17.5);
-  const [pitch, setPitch] = useState<number>(52);
+  const initialCenter: [number, number] = [3.9042, 7.44108];
+  const initialZoom = 17.5;
+  const initialPitch = 52;
 
   const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
@@ -60,19 +60,12 @@ export default function Map({
       const map = new mapboxgl.Map({
         container: mapContainerRef.current,
         style: "mapbox://styles/adetokunbo/cm84el8s1002q01sebajs3ril",
-        center: center,
-        zoom: zoom,
-        pitch: pitch,
+        center: initialCenter,
+        zoom: initialZoom,
+        pitch: initialPitch,
       });
 
       mapRef.current = map;
-
-      map.on("move", () => {
-        const mapCenter = map.getCenter();
-        setCenter([mapCenter.lng, mapCenter.lat]);
-        setZoom(map.getZoom());
-        setPitch(map.getPitch());
-      });
 
       // Initialize map with toilet data
       map.on('load', () => {
